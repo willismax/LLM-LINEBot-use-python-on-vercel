@@ -18,6 +18,7 @@ chatgpt = ChatGPT()
 def home():
     return 'https://github.com/willismax/LLM-LINEBot-use-python-on-vercel'
 
+
 # Listen for all Post Requests from /callback
 @app.route("/callback", methods=['POST'])
 def callback():
