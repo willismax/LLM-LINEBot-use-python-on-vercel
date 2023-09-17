@@ -36,6 +36,10 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    """LINE MessageAPI message processing"""
+    if event.source.user_id == 'Udeadbeefdeadbeefdeadbeefdeadbeef':
+        return 'OK'
+    
     global working_status
     if event.message.type != "text":
         return
