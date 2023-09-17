@@ -2,7 +2,7 @@ from flask import Flask, request, abort, jsonify
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from llm import ChatGPT
+from app.llm import ChatGPT
 
 import os
 
