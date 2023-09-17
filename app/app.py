@@ -13,7 +13,6 @@ working_status = os.getenv("DEFALUT_TALKING", default = "true").lower() == "true
 app = Flask(__name__)
 chatgpt = ChatGPT()
 
-
 # domain root
 @app.route('/')
 def home():
@@ -33,7 +32,6 @@ def callback():
     except InvalidSignatureError:
         abort(400)
     return 'OK'
-
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
