@@ -16,7 +16,7 @@ chatgpt = ChatGPT()
 # domain root
 @app.route('/')
 def home():
-    return 'Hello https://github.com/willismax/LLM-LINEBot-use-python-on-vercel'
+    return '<h1>Hello Word</h1>'
 
 
 # Listen for all Post Requests from /callback
