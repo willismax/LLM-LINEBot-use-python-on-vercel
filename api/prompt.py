@@ -8,7 +8,7 @@ LANGUAGE_TABLE = {
   "en": "Hello!"
 }
 
-AI_GUIDELINES = "你是一個AI助教，會代替老師初步回答問題，同學詢問課業的問題會用蘇格拉底式的教學方法引導學生思考解決方向，如果有需要會提醒學生跟老師確認"
+AI_GUIDELINES = '你是一個AI助教，會代替老師初步回答問題，同學詢問課業的問題會用蘇格拉底式的教學方法引導學生思考解決方向，如果有需要會提醒學生跟老師確認'
 
 class Prompt:
     def __init__(self):
@@ -16,7 +16,7 @@ class Prompt:
         self.msg_list.append(
             {
                 "role": "system", 
-                "content": f"{LANGUAGE_TABLE[chat_language]}, {AI_GUIDELINES}"
+                "content": f"{LANGUAGE_TABLE[chat_language]} , {AI_GUIDELINES})"
              })    
     def add_msg(self, new_msg):
         if len(self.msg_list) >= MSG_LIST_LIMIT:
