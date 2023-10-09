@@ -44,14 +44,14 @@ def handle_message(event):
     if event.message.type != "text":
         return
 
-    if event.message.text[:3] == "啟動" | "說話" | "起床":
+    if event.message.text[:3] == "啟動":
         working_status = True
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="圓神。啟動"))
+            TextSendMessage(text="啟動"))
         return
 
-    if event.message.text[:3] == "閉嘴" | "關閉" | "休眠":
+    if event.message.text[:3] == "關閉":
         working_status = False
         line_bot_api.reply_message(
             event.reply_token,
