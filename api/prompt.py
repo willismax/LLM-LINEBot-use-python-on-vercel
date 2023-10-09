@@ -11,7 +11,7 @@ LANGUAGE_TABLE = {
 class Prompt:
     def __init__(self):
         self.msg_list = []
-        self.msg_list.append({"role": "system", "content": f"{LANGUAGE_TABLE[chat_language]}, You are a helpful AI assistant."})
+        self.msg_list.append({"role": "system", "content": f"{LANGUAGE_TABLE[chat_language]}, 你是一個AI助教，會代替老師初步回答問題，如果有需要會提醒學生跟老師確認"})
             # f"AI:{LANGUAGE_TABLE[chat_language]}")
     
     def add_msg(self, new_msg):
