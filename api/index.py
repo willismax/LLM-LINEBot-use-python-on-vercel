@@ -64,7 +64,7 @@ def handle_message(event):
         chatgpt.add_msg(f"AI:{reply_msg}\n")
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text=reply_msg))
+            TextSendMessage(text=f"助教:{reply_msg}"))
 
 
 if __name__ == "__main__":
