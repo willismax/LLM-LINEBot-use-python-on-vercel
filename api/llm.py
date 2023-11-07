@@ -9,17 +9,17 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 class ChatGPT:
     def __init__(self):
         self.prompt = Prompt()
-        self.model = os.getenv("OPENAI_MODEL", default = "gpt-4-vision-preview")
+        self.model = os.getenv("OPENAI_MODEL", default = "gpt-3.5-turbo")
         self.temperature = float(os.getenv("OPENAI_TEMPERATURE", default = 0))
         self.max_tokens = int(os.getenv("OPENAI_MAX_TOKENS", default = 500))
 
     def get_response(self):
-        response = openai.completions.create(
+        response = openai.ChatCompletion.create(
             model=self.model,
             messages=self.prompt.generate_prompt(),
-            # prompt=self.prompt.generate_prompt(),
-            # max_tokens=self.max_tokens,
-            # temperature=self.temperature
+            max_tokens=self.max_tokens,
+            stop=None,
+            temperature=self.temperature
         )
         return response.choices[0].message.content
 
