@@ -18,7 +18,6 @@ class ChatGPT:
             model=self.model,
             prompt=self.prompt.generate_prompt(),
             max_tokens=self.max_tokens,
-            # stop=None,
             temperature=self.temperature
         )
         return response.choices[0].message.content
