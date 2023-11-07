@@ -1,9 +1,10 @@
 from api.prompt import Prompt
 
 import os
-import openai
+from openai import OpenAI
+client = OpenAI()
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client.api_key = os.getenv("OPENAI_API_KEY")
 
 
 class ChatGPT:
@@ -14,12 +15,12 @@ class ChatGPT:
         self.max_tokens = int(os.getenv("OPENAI_MAX_TOKENS", default = 500))
 
     def get_response(self):
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model=self.model,
             messages=self.prompt.generate_prompt(),
-            max_tokens=self.max_tokens,
-            stop=None,
-            temperature=self.temperature
+            # max_tokens=self.max_tokens,
+            # stop=None,
+            # temperature=self.temperature
         )
         return response.choices[0].message.content
 
