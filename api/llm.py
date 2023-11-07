@@ -16,7 +16,7 @@ class ChatGPT:
     def get_response(self):
         response = openai.completions.create(
             model=self.model,
-            messages=self.prompt.generate_prompt(),
+            prompt=self.prompt.generate_prompt(),
             max_tokens=self.max_tokens,
             stop=None,
             temperature=self.temperature
