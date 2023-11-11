@@ -65,6 +65,13 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=f"助教:{reply_msg}"))
+    """
+    This function handles LINE MessageAPI messages. 
+    It checks if the message is a text message and processes it accordingly.
+    If the message starts with "啟動", it sets the working_status to True.
+    If the message starts with "關閉", it sets the working_status to False.
+    If the working_status is True, it sends the message to ChatGPT to get a response and sends the response back to the user.
+    """
 
 
 if __name__ == "__main__":
