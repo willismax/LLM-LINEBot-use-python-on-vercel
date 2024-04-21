@@ -1,8 +1,9 @@
-from flask import Flask, request, abort
+from flask import Flask, request, json, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from api.llm import ChatGPT
+
 
 import os
 
@@ -17,6 +18,20 @@ chatgpt = ChatGPT()
 @app.route('/')
 def home():
     return '<h1>Hello Word</h1>'
+
+
+def start_loading_animation(chat_id, loading_seconds):
+    url = "https://api.line.me/v2/bot/chat/loading/start"
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {os.getenv("LINE_CHANNEL_ACCESS_TOKEN")}',
+    }
+    data = {
+        "chatId": chat_id,
+        "loadingSeconds": loading_seconds
+    }
+    response = request.post(url, headers=headers, data=json.dumps(data))
+    return response.json()
 
 
 # Listen for all Post Requests from /callback
@@ -39,6 +54,9 @@ def handle_message(event):
     """LINE MessageAPI message processing"""
     if event.source.user_id == 'Udeadbeefdeadbeefdeadbeefdeadbeef':
         return 'OK'
+    
+    # Start loading animation
+    start_loading_animation(event.source.userId, 5)
     
     global working_status
     if event.message.type != "text":
