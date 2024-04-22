@@ -56,7 +56,7 @@ def handle_message(event):
         return 'OK'
     
     # Start loading animation
-    start_loading_animation(event.source.userId, 5)
+    start_loading_animation(event.source.user_id, 5)
     
     global working_status
     if event.message.type != "text":
