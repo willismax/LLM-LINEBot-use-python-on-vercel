@@ -3,8 +3,7 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from api.llm import ChatGPT
-
-
+import requests
 import os
 
 line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
@@ -20,17 +19,18 @@ def home():
     return '<h1>Hello Word</h1>'
 
 
+# 啟動LINE的loading動畫
 def start_loading_animation(chat_id, loading_seconds):
     url = "https://api.line.me/v2/bot/chat/loading/start"
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': f'Bearer {os.getenv("LINE_CHANNEL_ACCESS_TOKEN")}',
+        'Authorization': f'Bearer {line_bot_api.channel_access_token}',
     }
     data = {
         "chatId": chat_id,
         "loadingSeconds": loading_seconds
     }
-    response = request.post(url, headers=headers, data=json.dumps(data))
+    response = requests.post(url, headers=headers, json=data)
     return response.json()
 
 

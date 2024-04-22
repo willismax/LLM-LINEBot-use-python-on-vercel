@@ -2,3 +2,4 @@ flask==2.2.2
 Werkzeug==2.3.7
 line-bot-sdk
 openai
+requests
