@@ -22,7 +22,7 @@ class ChatGPT:
         self.prompt = Prompt()
         self.model = os.getenv("OPENAI_MODEL", default = "gpt-4-turbo-2024-04-09")
         self.temperature = float(os.getenv("OPENAI_TEMPERATURE", default = 0))
-        self.max_tokens = int(os.getenv("OPENAI_MAX_TOKENS", default = 500))
+        self.max_tokens = int(os.getenv("OPENAI_MAX_TOKENS", default = 600))
 
     def get_response(self):
         """
