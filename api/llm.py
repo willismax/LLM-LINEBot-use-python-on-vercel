@@ -64,7 +64,7 @@ class ChatGPT:
         return response
 
     def get_user_image(self, image_content):
-        path = './static/temp.png'
+        path = './temp.png'
         with open(path, 'wb') as fd:
             for chunk in image_content.iter_content():
                 fd.write(chunk)
