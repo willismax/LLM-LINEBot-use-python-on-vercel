@@ -1,6 +1,6 @@
 import os
 import io
-from api.llm import ChatGPT
+from chatgpt.llm import ChatGPT
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -66,17 +66,15 @@ def handle_message(event):
 @web_handler.add(MessageEvent, message=ImageMessage)
 def handle_image_message(event):
     # 處理圖片訊息
-    message_content = line_bot_api.get_message_content(event.message.id)
-    image_bytes = io.BytesIO()
-    for chunk in message_content.iter_content():
-        image_bytes.write(chunk)
-    image_bytes.seek(0)
+    image_content = line_bot_api.get_message_content(event.message.id)
+    path = chatgpt.get_user_image(image_content)
+    link = chatgpt.upload_img_link(path)
 
     # 調用OpenAI API進行圖片處理
-    response = chatgpt.process_image(image_bytes)
+    response = chatgpt.process_image_link(link)
     
-    # 假設OpenAI回傳的結果包含在response['data']['text']
-    reply_msg = response['data']['text']
+    # 假設OpenAI回傳的結果包含在response['choices'][0]['text']
+    reply_msg = response['choices'][0]['text']
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=f"助教:{reply_msg}"))

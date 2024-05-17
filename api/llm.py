@@ -1,6 +1,8 @@
 from api.prompt import Prompt
 import os
 from openai import OpenAI
+import pyimgur
+
 client = OpenAI()
 
 client.api_key = os.getenv("OPENAI_API_KEY")
@@ -44,18 +46,32 @@ class ChatGPT:
         """
         self.prompt.add_msg(text)
 
-    def process_image(self, image_bytes):
+    def process_image_link(self, image_url):
         """
         Processes an image using OpenAI's image recognition capabilities.
 
         Parameters:
-        - image_bytes: the image data in bytes to be processed.
+        - image_url: the URL of the image to be processed.
 
         Returns:
         - A dictionary representing the result of the image processing.
         """
-        response = client.Image.create(
-            file=image_bytes,
-            purpose='text_detection'
+        response = client.Completion.create(
+            engine="davinci",
+            prompt=f"Analyze the text in this image: {image_url}",
+            max_tokens=100
         )
         return response
+
+    def get_user_image(self, image_content):
+        path = './static/temp.png'
+        with open(path, 'wb') as fd:
+            for chunk in image_content.iter_content():
+                fd.write(chunk)
+        return path
+
+    def upload_img_link(self, imgpath):
+        IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
+        im = pyimgur.Imgur(IMGUR_CLIENT_ID)
+        uploaded_image = im.upload_image(imgpath, title="Uploaded with PyImgur")
+        return uploaded_image.link
