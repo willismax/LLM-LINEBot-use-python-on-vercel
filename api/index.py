@@ -1,4 +1,5 @@
 import os
+import io
 from api.llm import ChatGPT
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
@@ -66,26 +67,19 @@ def handle_message(event):
 def handle_image_message(event):
     # 處理圖片訊息
     message_content = line_bot_api.get_message_content(event.message.id)
-    with open(f"{event.message.id}.jpg", "wb") as fd:
-        for chunk in message_content.iter_content():
-            fd.write(chunk)
+    image_bytes = io.BytesIO()
+    for chunk in message_content.iter_content():
+        image_bytes.write(chunk)
+    image_bytes.seek(0)
 
     # 調用OpenAI API進行圖片處理
-    response = chatgpt.process_image(f"{event.message.id}.jpg")
+    response = chatgpt.process_image(image_bytes)
     
     # 假設OpenAI回傳的結果包含在response['data']['text']
     reply_msg = response['data']['text']
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=f"助教:{reply_msg}"))
-
-    """
-    This function handles LINE MessageAPI messages. 
-    It checks if the message is a text message and processes it accordingly.
-    If the message starts with "啟動", it sets the working_status to True.
-    If the message starts with "關閉", it sets the working_status to False.
-    If the working_status is True, it sends the message to ChatGPT to get a response and sends the response back to the user.
-    """
 
 if __name__ == "__main__":
     app.run()
