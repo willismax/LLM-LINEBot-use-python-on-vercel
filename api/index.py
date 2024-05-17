@@ -7,7 +7,7 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageMess
 
 line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
 web_handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
-working_status = os.getenv("DEFALUT_TALKING", default = "true").lower() == "true"
+working_status = os.getenv("DEFALUT_TALKING", default="true").lower() == "true"
 
 app = Flask(__name__)
 chatgpt = ChatGPT()
@@ -15,7 +15,7 @@ chatgpt = ChatGPT()
 # domain root
 @app.route('/')
 def home():
-    return '<h1>Hello Word</h1>'
+    return '<h1>Hello World</h1>'
 
 # Listen for all Post Requests from /callback
 @app.route("/callback", methods=['POST'])
@@ -61,7 +61,6 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=f"助教:{reply_msg}"))
-        
 
 @web_handler.add(MessageEvent, message=ImageMessage)
 def handle_image_message(event):
@@ -72,15 +71,10 @@ def handle_image_message(event):
             fd.write(chunk)
 
     # 調用OpenAI API進行圖片處理
-    with open(f"{event.message.id}.jpg", "rb") as image_file:
-        reply_msg = chatgpt.Image.create(
-            file=image_file,
-            purpose='text_detection'
-        )
+    response = chatgpt.process_image(f"{event.message.id}.jpg")
     
     # 假設OpenAI回傳的結果包含在response['data']['text']
-    reply_msg = chatgpt.get_response().replace("AI:", "", 1)
-    chatgpt.add_msg(f"AI:{reply_msg}\n")
+    reply_msg = response['data']['text']
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=f"助教:{reply_msg}"))
@@ -92,7 +86,6 @@ def handle_image_message(event):
     If the message starts with "關閉", it sets the working_status to False.
     If the working_status is True, it sends the message to ChatGPT to get a response and sends the response back to the user.
     """
-
 
 if __name__ == "__main__":
     app.run()
