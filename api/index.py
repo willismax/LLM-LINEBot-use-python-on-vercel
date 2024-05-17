@@ -1,9 +1,9 @@
+import os
+from api.llm import ChatGPT
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from api.llm import ChatGPT
-import os
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageMessage
 
 line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
 web_handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
@@ -61,6 +61,30 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=f"助教:{reply_msg}"))
+        
+
+@web_handler.add(MessageEvent, message=ImageMessage)
+def handle_image_message(event):
+    # 處理圖片訊息
+    message_content = line_bot_api.get_message_content(event.message.id)
+    with open(f"{event.message.id}.jpg", "wb") as fd:
+        for chunk in message_content.iter_content():
+            fd.write(chunk)
+
+    # 調用OpenAI API進行圖片處理
+    with open(f"{event.message.id}.jpg", "rb") as image_file:
+        reply_msg = chatgpt.Image.create(
+            file=image_file,
+            purpose='text_detection'
+        )
+    
+    # 假設OpenAI回傳的結果包含在response['data']['text']
+    reply_msg = chatgpt.get_response().replace("AI:", "", 1)
+    chatgpt.add_msg(f"AI:{reply_msg}\n")
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=f"助教:{reply_msg}"))
+
     """
     This function handles LINE MessageAPI messages. 
     It checks if the message is a text message and processes it accordingly.
