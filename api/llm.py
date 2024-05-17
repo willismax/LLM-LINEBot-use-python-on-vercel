@@ -18,7 +18,7 @@ class ChatGPT:
 
     def __init__(self):
         self.prompt = Prompt()
-        self.model = os.getenv("OPENAI_MODEL", default="gpt-4o")
+        self.model = os.getenv("OPENAI_MODEL", default="gpt-4")
         self.temperature = float(os.getenv("OPENAI_TEMPERATURE", default=0))
         self.max_tokens = int(os.getenv("OPENAI_MAX_TOKENS", default=600))
 
@@ -44,19 +44,18 @@ class ChatGPT:
         """
         self.prompt.add_msg(text)
 
-    def process_image(self, image_path):
+    def process_image(self, image_bytes):
         """
         Processes an image using OpenAI's image recognition capabilities.
 
         Parameters:
-        - image_path: the path to the image file to be processed.
+        - image_bytes: the image data in bytes to be processed.
 
         Returns:
         - A dictionary representing the result of the image processing.
         """
-        with open(image_path, "rb") as image_file:
-            response = client.Image.create(
-                file=image_file,
-                purpose='text_detection'
-            )
+        response = client.Image.create(
+            file=image_bytes,
+            purpose='text_detection'
+        )
         return response
