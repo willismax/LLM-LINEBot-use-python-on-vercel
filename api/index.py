@@ -1,5 +1,6 @@
 import os
 import io
+import requests
 from api.llm import ChatGPT
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
@@ -30,6 +31,19 @@ def callback():
         abort(400)
     return 'OK'
 
+def start_loading_animation(chat_id, loading_seconds):
+    url = "https://api.line.me/v2/bot/chat/loading/start"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {os.getenv('LINE_CHANNEL_ACCESS_TOKEN')}"
+    }
+    data = {
+        "chatId": chat_id,
+        "loadingSeconds": loading_seconds
+    }
+    response = requests.post(url, headers=headers, json=data)
+    return response.status_code
+
 @web_handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     """LINE MessageAPI message processing"""
@@ -56,6 +70,7 @@ def handle_message(event):
         return
 
     if working_status:
+        start_loading_animation(event.source.user_id, 5)
         chatgpt.add_msg(f"HUMAN:{event.message.text}?\n")
         reply_msg = chatgpt.get_response().replace("AI:", "", 1)
         chatgpt.add_msg(f"AI:{reply_msg}\n")
