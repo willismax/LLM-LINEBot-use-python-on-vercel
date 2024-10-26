@@ -15,6 +15,25 @@
 5. 加入LINE官方帳號，使用者對話將由 ChatGPT-3.5-tubo回應(LINE自動回應須關閉)。
 詳細描述於[部落格](https://willismax.github.io/my-site/blog/Customize%20Your%20AI%20Teaching%20Assistant%20-%20A%20Socratic%20Approach)。
 
+## QuickReply 功能
+- **QuickReply 功能**: QuickReply 功能允許用戶快速選擇預設的回應選項，提升使用者體驗。此功能在 `api/index.py` 中實現。
+
+    QuickReply 功能的示例：
+    ```python
+    questions = ["了解更多", "出2個練習題", "相關觀念", "關閉AI"]
+    quick_reply_buttons = [
+        QuickReplyButton(action=MessageAction(label=question, text=question))
+        for question in questions
+    ]
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(
+            text=f"助教:{reply_msg}", 
+            quick_reply=QuickReply(items=quick_reply_buttons)
+        )
+    )
+    ```
+
 ## 客製化
 - 如果要客製化在其他應用，在`api/prompt.py`修改`AI_GUIDELINES`後提示文字即可，目前預設為教學用，提示詞為:
     ```
@@ -22,6 +41,14 @@
     ``` 
     組合起來就是提示系統:`messages: [{ role: "system", content: "你是一個AI助教，專門使用蘇格拉底教學法來回答學生的問題，如果有需要，會建議學生與老師進一步確認" }]` 
 - 請留意 Vercel 有處理超過10秒會Time Out的限制，太複雜可能會逾時。
+- **QuickReply 選項修改**: 在 `api/index.py` 中修改 `questions` 列表中的選項即可自定義 QuickReply 按鈕。
+    ```python
+    questions = ["新選項1", "新選項2", "新選項3", "關閉AI"]
+    quick_reply_buttons = [
+        QuickReplyButton(action=MessageAction(label=question, text=question))
+        for question in questions
+    ]
+    ```
 
 ## 成果展示
 -   **出色的問答回應**: 這個AI助手採用ChatGPT 3.5 Tubo，能在精確及速度獲得很好的平衡，即時地回應學生的問題。 ![出色回應](https://hackmd.io/_uploads/ryjveAW-T.png)
