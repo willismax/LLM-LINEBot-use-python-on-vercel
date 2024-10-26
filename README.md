@@ -30,20 +30,6 @@
 
     ![培養思考](https://hackmd.io/_uploads/ryjTiWfZT.png) ![成果展示](https://hackmd.io/_uploads/HkZ1nWzbp.png) ![更多示例](https://hackmd.io/_uploads/Byyf2bGWp.png)
 
-## Display a loading animation
--   **Loading Animation**: This feature allows the LINE user interface to display a loading animation using the provided curl command. The animation is triggered before processing a message, providing a visual indication to the user that their request is being processed.
-
-    Example curl command to start a loading animation:
-    ```
-    curl -v -X POST https://api.line.me/v2/bot/chat/loading/start \
-    -H 'Content-Type: application/json' \
-    -H 'Authorization: Bearer {channel access token}' \
-    -d '{
-        "chatId": "U4af4980629...",
-        "loadingSeconds": 5
-    }'
-    ```
-
 ## 顯示加載動畫
 -   **加載動畫**: 此功能允許LINE用戶界面使用提供的curl命令顯示加載動畫。動畫在處理消息之前觸發，向用戶提供其請求正在處理的視覺指示。
 
