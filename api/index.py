@@ -5,7 +5,7 @@ from api.llm import ChatGPT
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageMessage, ImageSendMessage, QuickReply, QuickReplyButton, MessageAction
 
 line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
 web_handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
@@ -59,14 +59,14 @@ def handle_message(event):
         working_status = True
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="啟動"))
+            TextSendMessage(text="啟動AI"))
         return
 
     if event.message.text[:3] == "關閉":
         working_status = False
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="ChatGPT休眠去"))
+            TextSendMessage(text='AI下班去，喚醒請輸入"啟動"'))
         return
 
     if working_status:
@@ -74,9 +74,20 @@ def handle_message(event):
         chatgpt.add_msg(f"HUMAN:{event.message.text}?\n")
         reply_msg = chatgpt.get_response().replace("AI:", "", 1)
         chatgpt.add_msg(f"AI:{reply_msg}\n")
+        
+        questions = ["了解更多", "關閉", "啟動"]
+        # 將追問問題設為 Quick Replies
+        quick_reply_buttons = [
+            QuickReplyButton(action=MessageAction(label=question, text=question))
+            for question in questions
+        ]
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text=f"助教:{reply_msg}"))
+            TextSendMessage(
+                text=f"助教:{reply_msg}", 
+                quick_reply=QuickReply(items=quick_reply_buttons)
+            )
+        )
 
 @web_handler.add(MessageEvent, message=ImageMessage)
 def handle_image_message(event):
